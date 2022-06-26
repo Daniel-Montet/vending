@@ -25,12 +25,12 @@ export function validate(schema: any, input: {}): { value: any, error: any } {
 app.use(express.json());
 
 app.get("/products", (_, res) => {
-	const result = MachineService.find();
+	const result = MachineService.findAllProducts();
 	return res.send(result)
 })
 
 app.get("/products/:code", (req, res) => {
-	const result = MachineService.findOne(parseInt(req.params.code));
+	const result = MachineService.findOneProduct(parseInt(req.params.code));
 
 	if (!result) {
 		return res.status(404).send("Resource not found")
@@ -46,13 +46,13 @@ app.post("/products", (req, res) => {
 		return res.status(400).send(error);
 	}
 
-	const result = MachineService.addOne(value);
+	const result = MachineService.addOneProduct(value);
 	return res.send(result).status(201);
 })
 
 app.put("/products/:code", (req: any, res) => {
 	// check if product exists
-	const result = MachineService.findOne(parseInt(req.params.code))
+	const result = MachineService.findOneProduct(parseInt(req.params.code))
 
 	if (!result) {
 		return res.status(404).send("Resource not found")
@@ -65,19 +65,19 @@ app.put("/products/:code", (req: any, res) => {
 		return res.status(400).send(error);
 	}
 
-	const updatedProduct = MachineService.addOne(value);
+	const updatedProduct = MachineService.addOneProduct(value);
 	return res.send(updatedProduct);
 })
 
 app.delete("/products/:code", (req, res) => {
 	// check if product exists
-	const result = MachineService.findOne(parseInt(req.params.code));
+	const result = MachineService.findOneProduct(parseInt(req.params.code));
 
 	if (!result) {
 		return res.status(404).send("Resource not found")
 	}
 
-	const isDeleted = MachineService.delete(parseInt(req.params.code));
+	const isDeleted = MachineService.deleteOneProduct(parseInt(req.params.code));
 	return res.send(isDeleted)
 })
 
