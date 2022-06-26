@@ -1,8 +1,9 @@
-interface product {
+interface IProduct {
 	stock: number,
 	sold: number,
 	price: number,
-	code: number
+	code: number,
+	name: string
 }
 
 
@@ -11,20 +12,34 @@ class VendingMachine {
 	private products;
 
 	constructor() {
-		this.coins = new Set();
-		this.products = new Set<product>();
+		this.coins = new Map();
+		this.products = new Map<IProduct["code"], IProduct>();
 	}
 
-	get items() {
-		return this.products.entries()
+	addOne(product: IProduct) {
+		this.products.set(product.code, product);
+		return this.findOne(product.code)
 	}
+
+	findOne(code: number) {
+		return this.products.get(code);
+	}
+
+	find() {
+		return [...this.products.values()];
+	}
+
+	delete(code: number) {
+		return this.products.delete(code);
+	}
+
+
 	// setPrice
 	// collectMoney
 	// addProducts
 	// addOrUpdateCoins
 }
 
+const MachineService = new VendingMachine()
 
-const Machine = new VendingMachine();
-
-export default Machine;
+export default MachineService;
