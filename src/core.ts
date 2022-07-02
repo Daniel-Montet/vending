@@ -1,18 +1,4 @@
-interface IProduct {
-	stock: number,
-	sold: number,
-	price: number,
-	code: number,
-	name: string
-}
-
-interface ICoin {
-	name: string,
-	value: number,
-	cents: number,
-	total: number,
-	code: number
-}
+import { ICoin, IProduct } from "./lib/joi/types/types";
 
 
 class VendingMachine {
@@ -58,11 +44,6 @@ class VendingMachine {
 		return this.coins.delete(code)
 	}
 
-
-	// setPrice
-	// collectMoney
-	// addProducts
-	// addOrUpdateCoins
 }
 
 const MachineService = new VendingMachine()
