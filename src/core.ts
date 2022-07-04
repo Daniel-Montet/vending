@@ -1,4 +1,4 @@
-import { ICoin, IProduct } from "./lib/joi/types/types";
+import { ICoin, IProduct } from "./lib/types/types";
 
 
 class VendingMachine {

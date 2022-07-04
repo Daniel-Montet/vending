@@ -1,18 +1,3 @@
-// Step one
-// 	create coin
-// 	update coin
-// 	delete coin
-// 	read coin
-//  get all coins
-
-// Step two
-//  create product
-//  update product
-//  delete product
-//  read product
-//  get all products
-
-
 // Step 3
 // 	get total amount of sales
 //  withdraw all profit
@@ -21,17 +6,18 @@
 import MachineService from "../core";
 
 import express from "express";
-import { validate } from "../lib/joi/joi.helpers";
-import { coinSchema, productSchema } from "../lib/joi/schemas/product.schema";
-const app = express();
+import { validate } from "../../joi/joi.helpers";
+import { productSchema } from "../../joi/schemas/product.schema";
+import { coinSchema } from "../../joi/schemas/coin.schema";
+const router = express.Router()
 
 
-app.get("/products", (_, res) => {
+router.get("/products", (_, res) => {
 	const result = MachineService.findAllProducts();
 	return res.send(result)
 })
 
-app.get("/products/:code", (req, res) => {
+router.get("/products/:code", (req, res) => {
 	const result = MachineService.findOneProduct(parseInt(req.params.code));
 
 	if (!result) {
@@ -41,7 +27,7 @@ app.get("/products/:code", (req, res) => {
 	return res.send(result)
 })
 
-app.post("/products", (req, res) => {
+router.post("/products", (req, res) => {
 	const { value, error } = validate(productSchema, req.body);
 
 	if (error) {
@@ -52,7 +38,7 @@ app.post("/products", (req, res) => {
 	return res.send(result).status(201);
 })
 
-app.put("/products/:code", (req: any, res) => {
+router.put("/products/:code", (req: any, res) => {
 	// check if product exists
 	const result = MachineService.findOneProduct(parseInt(req.params.code))
 
@@ -71,7 +57,7 @@ app.put("/products/:code", (req: any, res) => {
 	return res.send(updatedProduct);
 })
 
-app.delete("/products/:code", (req, res) => {
+router.delete("/products/:code", (req, res) => {
 	// check if product exists
 	const result = MachineService.findOneProduct(parseInt(req.params.code));
 
@@ -84,12 +70,12 @@ app.delete("/products/:code", (req, res) => {
 })
 
 
-app.get("/coins", (req, res) => {
+router.get("/coins", (req, res) => {
 	const result = MachineService.findAllCoins();
 	return res.send(result)
 })
 
-app.get("/coins/:code", (req, res) => {
+router.get("/coins/:code", (req, res) => {
 	const result = MachineService.findOneCoin(parseInt(req.params.code));
 
 	if (!result) {
@@ -100,7 +86,7 @@ app.get("/coins/:code", (req, res) => {
 })
 
 
-app.post("/coins", (req, res) => {
+router.post("/coins", (req, res) => {
 	const { value, error } = validate(coinSchema, req.body);
 
 	if (error) {
@@ -112,7 +98,7 @@ app.post("/coins", (req, res) => {
 })
 
 
-app.put("/coins/:code", (req: any, res) => {
+router.put("/coins/:code", (req: any, res) => {
 	// check if product exists
 	const result = MachineService.findOneCoin(parseInt(req.params.code))
 
@@ -131,7 +117,7 @@ app.put("/coins/:code", (req: any, res) => {
 	return res.send(updatedProduct);
 })
 
-app.delete("/coins/:code", (req, res) => {
+router.delete("/coins/:code", (req, res) => {
 	// check if product exists
 	const result = MachineService.findOneCoin(parseInt(req.params.code));
 
@@ -142,3 +128,6 @@ app.delete("/coins/:code", (req, res) => {
 	const isDeleted = MachineService.deleteOneCoin(parseInt(req.params.code));
 	return res.send(isDeleted)
 })
+
+
+export default router;

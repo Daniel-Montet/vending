@@ -8,7 +8,7 @@ export interface IProduct {
 
 export interface ICoin {
 	name: string,
-	total: number,
+	count: number,
 	code: number
 }
 
