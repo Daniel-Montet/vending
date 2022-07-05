@@ -43,7 +43,6 @@ router.get("/products/:code", (req, res) => {
 
 router.post("/buy", (req, res) => {
 	const { value, error } = validate(buySchema, req.body);
-	console.log("=================================================")
 	if (error) {
 		return res.status(400).send(error)
 	}
@@ -65,12 +64,10 @@ router.post("/buy", (req, res) => {
 	// calculate amount to be charged
 	const cash = MachineService.round(value.amount);
 	const bill = product!.price * value.numberOfItems;
-	console.log("total to be charged", bill)
-	console.log("amount provided by customer", value.amount)
+
 
 	// check if cash by customer is enough for purchase
 	const isEnough = cash >= bill;
-	console.log("isEnough money provided", isEnough)
 	if (!isEnough) {
 		return res.status(400).send("Provide enough money")
 	}
@@ -79,10 +76,7 @@ router.post("/buy", (req, res) => {
 	// check if there are enough coins for change
 	const change = cash - bill;
 	const coinReserve = coin.count - MachineService.round(change);
-	console.log("coin count before bill", coin.count)
-	console.log("coins after giving change ", coinReserve)
 	let canOfferChange = Math.sign(coinReserve);
-	console.log("can offer change", canOfferChange)
 
 	if (canOfferChange === -1) {
 		return res.send("Out of order, no change available")
