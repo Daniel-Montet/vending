@@ -9,6 +9,7 @@ import express from "express";
 import { validate } from "../../joi/joi.helpers";
 import { productSchema } from "../../joi/schemas/product.schema";
 import { coinSchema } from "../../joi/schemas/coin.schema";
+import { amountSchema } from "../../joi/schemas/amountSchema";
 const router = express.Router()
 
 
@@ -129,5 +130,33 @@ router.delete("/coins/:code", (req, res) => {
 	return res.send(isDeleted)
 })
 
+
+router.post("/withdraw", (req, res) => {
+	const { value, error } = validate(amountSchema, req.body)
+
+	if (error) {
+		return res.status(400).send(error);
+	}
+
+	const result = MachineService.withDraw(value.amount);
+	return res.send({ amount: result });
+})
+
+router.get("/account-balance", (req, res) => {
+	const balance = MachineService.findAccountBalance()
+	return res.send({ balance: balance })
+})
+
+
+router.get("/sales", (req, res) => {
+	const records = MachineService.findAllSalesRecords()
+	return res.status(200).send(records)
+})
+
+router.get("/sum-of-sales", (req, res) => {
+	const sum = MachineService.findSumOfSales()
+	console.log(sum)
+	return res.status(200).send({ sum: sum })
+})
 
 export default router;

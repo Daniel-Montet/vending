@@ -43,7 +43,7 @@ router.get("/products/:code", (req, res) => {
 
 router.post("/buy", (req, res) => {
 	const { value, error } = validate(buySchema, req.body);
-
+	console.log("=================================================")
 	if (error) {
 		return res.status(400).send(error)
 	}
@@ -63,38 +63,59 @@ router.post("/buy", (req, res) => {
 	}
 
 	// calculate amount to be charged
-	const total = product!.price * value.numberOfItems;
+	const cash = MachineService.round(value.amount);
+	const bill = product!.price * value.numberOfItems;
+	console.log("total to be charged", bill)
+	console.log("amount provided by customer", value.amount)
 
 	// check if cash by customer is enough for purchase
-	const isEnough = value.amount >= total;
+	const isEnough = cash >= bill;
+	console.log("isEnough money provided", isEnough)
 	if (!isEnough) {
 		return res.status(400).send("Provide enough money")
 	}
 
 
 	// check if there are enough coins for change
-	const result = coin.count - total;
-	let sign = Math.sign(result);
+	const change = cash - bill;
+	const coinReserve = coin.count - MachineService.round(change);
+	console.log("coin count before bill", coin.count)
+	console.log("coins after giving change ", coinReserve)
+	let canOfferChange = Math.sign(coinReserve);
+	console.log("can offer change", canOfferChange)
 
-	if (sign === -1) {
-		return res.send("Out of order, no change")
+	if (canOfferChange === -1) {
+		return res.send("Out of order, no change available")
 	}
 
 	// check if stock is enough
 	const stock = product!.stock - value.numberOfItems;
-	sign = Math.sign(stock)
+	const canOfferProducts = Math.sign(stock)
 
-	if (sign === -1) {
+	if (canOfferProducts === -1) {
 		return res.send("Out of order, not enough products left")
 	}
 
-	// bill the client
-	coin.count = result;
+	// bill the client and record sale
+	coin.count = coinReserve;
 	product!.stock = stock;
+	const sale = {
+		"coinCode": coin.code,
+		"productCode": product!.code,
+		"bill": bill,
+		"items": value.numberOfItems
+	}
 	MachineService.addOneCoin(coin);
+	console.log(product)
 	MachineService.addOneProduct(product!)
+	MachineService.addOneSale(sale);
+	MachineService.updateAccount(bill);
 
-	return res.send("Thank you for purchasing")
+	return res.send({
+		"message": `Thank you for purchasing ${value.numberOfItems} ${product!.name}`,
+		"bill": bill,
+		"change": change
+	})
 })
 
 

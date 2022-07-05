@@ -12,3 +12,9 @@ export interface ICoin {
 	code: number
 }
 
+export interface ISale {
+	coinCode: number,
+	productCode: number,
+	items: number,
+	bill: number
+}
