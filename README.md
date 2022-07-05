@@ -1,5 +1,14 @@
 ## Getting Started
 
+Clone this repository:
+
+```
+git clone https://github.com/Daniel-Montet/vending.git
+
+```
+
+#### then
+
 ```
 cd vending
 ```
@@ -16,10 +25,6 @@ npm install
 yarn install
 ```
 
-## Running production server
-
-This command builds the source first then runs the production build.
-
 #### RUN
 
 ```
@@ -35,4 +40,4 @@ yarn start
 ### NOTE
 
 - Entry file is index.js .
-- There are two main routes, /admin is for administrator endpoints while /user is for user endpoints.
+- There are two main routes, '/admin' is for administrator endpoints while '/user' is for user endpoints.
